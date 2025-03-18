@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const mysql = require("mysql2");
+const { Client } = require("pg");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -11,20 +11,19 @@ app.use(cors());
 
 dotenv.config();
 
-const db = mysql.createConnection({
-  user: process.env.DB_USER || "root",
+const db = new Client({
+  user: process.env.DB_USER || "postgres",
   host: process.env.DB_HOST || "localhost",
   database: process.env.DB_NAME || "huw",
   password: process.env.DB_PASSWORD || "123",
-  port: process.env.DB_PORT || "3306",
+  port: process.env.DB_PORT || 5432,
 });
 
 db.connect((err) => {
   if (err) {
-    console.log("error connecting to db", err);
+    console.log("Error connecting to DB", err);
   }
-
-  console.log("connected to db");
+  console.log("Connected to DB");
 });
 
 app.listen(port, () => {
@@ -33,8 +32,9 @@ app.listen(port, () => {
 
 app.get("/products", (req, res) => {
   db.query("SELECT * FROM products", (err, results) => {
-    if (err) throw err;
-    
-    res.json(results);
+    if (err) {
+      throw err;
+    }
+    res.json(results.rows);  // PostgreSQL client returns 'rows' instead of 'results'
   });
 });
