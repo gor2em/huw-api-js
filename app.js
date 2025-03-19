@@ -23,7 +23,7 @@ db.connect((err) => {
   if (err) {
     console.log("Error connecting to DB", err);
   }
-  console.log("Connected to DB");
+  console.log("Connected to DB",db);
 });
 
 app.listen(port, () => {
@@ -31,10 +31,14 @@ app.listen(port, () => {
 });
 
 app.get("/products", (req, res) => {
-  db.query("SELECT * FROM products", (err, results) => {
-    if (err) {
-      throw err;
-    }
-    res.json(results.rows);  // PostgreSQL client returns 'rows' instead of 'results'
-  });
+
+  res.json({name:'cae'});
+  
+  // db.query("SELECT * FROM products", (err, results) => {
+  //   if (err) {
+  //     console.log("err",err);
+  //     // throw err;
+  //   }
+  //   res.json(results.rows);  // PostgreSQL client returns 'rows' instead of 'results'
+  // });
 });
